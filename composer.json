@@ -1,12 +1,18 @@
 {
   "name": "kadivar/laravel-passport-sms-grant",
   "description": "This is a Laravel passport grant for the SMS.",
-  "keywords": [ "passport", "laravel", "sms" ],
+  "keywords": [
+    "passport",
+    "laravel",
+    "sms"
+  ],
+  "homepage": "https://github.com/kadivar/laravel-passport-sms-grant",
   "type": "library",
   "license": "MIT",
   "require": {
     "php": ">=7.2.0",
-    "laravel/framework": ">=6.0.0"
+    "laravel/framework": ">=6.0.0",
+    "laravel/passport": "^7.4"
   },
   "require-dev": {
     "phpunit/phpunit": "~7.0|~8.0",
