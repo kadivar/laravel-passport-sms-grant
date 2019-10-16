@@ -25,7 +25,7 @@ In Laravel 5.5 the service provider will automatically get registered. In older 
 
 * Make a POST request to https://your-site.com/oauth/token, just like you would a Password or Refresh grant.
 * The POST body should contain grant_type = sms.
-* The request will get routed to your User::byPassportSmsRequest() function, where you will determine if access should be granted or not.
+* The request will get routed to your User::byPassportSmsGrantType() function, where you will determine if access should be granted or not.
 * An access_token and refresh_token will be returned if successful.
 
 ## Request
@@ -43,7 +43,7 @@ $response = $http->post('http://your-app.com/oauth/token', [
 
 ## Example
 
-Here is what a `User::byPassportSmsRequest()` method might look like...
+Here is what a `User::byPassportSmsGrantType()` method might look like...
 
 ​```php
 /**
@@ -81,7 +81,7 @@ public function byPassportSmsequest(Request $request)
 }
 ```
 
-In this example, the app is able to authenticate a user based on an `phone`  and ``verifyCode property from a submitted JSON payload.  It will return `null` or a user object.  It also might throw exceptions explaining why the token is invalid.  The `byPassportSmsRequest` catches any of those exceptions and converts them to appropriate OAuth exception type.  If an `phone` is not present on the request payload, then we return `null` which returns an **invalid_credentials** error response:
+In this example, the app is able to authenticate a user based on an `phone`  and ``verifyCode property from a submitted JSON payload.  It will return `null` or a user object.  It also might throw exceptions explaining why the token is invalid.  The `byPassportSmsGrantType` catches any of those exceptions and converts them to appropriate OAuth exception type.  If an `phone` is not present on the request payload, then we return `null` which returns an **invalid_credentials** error response:
 
 ```json
 {
