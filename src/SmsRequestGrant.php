@@ -3,6 +3,7 @@
 namespace Kadivar\Passport\Sms;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Laravel\Passport\Bridge\User;
 use League\OAuth2\Server\Entities\UserEntityInterface;
 use League\OAuth2\Server\Exception\OAuthServerException;
@@ -96,10 +97,33 @@ class SmsRequestGrant extends AbstractGrant
         if (is_null($model = config('auth.providers.users.model'))) {
             throw OAuthServerException::serverError('Unable to determine user model from configuration.');
         }
-        if (method_exists($model, 'byPassportSmsGrantType')) {
-            $user = (new $model)->byPassportSmsGrantType($request);
+        if (method_exists($model, 'getUserByMobile')) {
+            $user_model = (new $model);
+            try {
+                Validator::make($request->all(), [
+                    'mobile' => [
+                        'required',
+                        'min:11',
+                        'max:11'
+                    ],
+                    'verify_code' => [
+                        'required',
+                        'max:6',
+                        function ($attribute, $value, $fail) use ($user_model, $request) {
+                            $user = $user_model->getUserByMobile($request->mobile);
+                            $current_token = $user->sms_token;
+                            if ((string)$current_token != (string)$value) {
+                                return $fail($attribute.' is invalid.');
+                            }
+                        },
+                    ]
+                ])->validate();
+            } catch (\Exception $e) {
+                throw OAuthServerException::accessDenied($e->getMessage());
+            }
+            $user = $user_model->getUserByMobile($request->mobile);
         } else {
-            throw OAuthServerException::serverError('Unable to find byPassportSmsGrantType method on user model.');
+            throw OAuthServerException::serverError('Unable to find getUserByMobile method on user model.');
         }
         return ($user) ? new User($user->id) : null;
     }
