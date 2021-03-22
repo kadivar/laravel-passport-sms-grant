@@ -31,6 +31,10 @@
     "laravel": {
       "providers": [
         "Kadivar\\Passport\\Sms\\SmsLoginGrantProvider"
+      ],
+      "dont-discover": [
+        "laravel/passport",
+        "kadivar/laravel-passport-sms-grant"
       ]
     }
   },
